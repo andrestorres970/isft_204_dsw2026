@@ -2,6 +2,49 @@
 #include <string.h> // Quitar el '\n' del final de fgets(): nombre[strcspn(nombre, "\n")] = '\0';
 // #include <math.h>
 
+// 29/09/26
+// Ej. 1: Competencia de ciclismo.
+//  Los participantes hacen dos pruebas. La primera registra tiempo, la segunda numero de vueltas.
+//  Se almacenan en arreglos los nombres, tiempo (pp), y vueltas (sp).
+//  Se debe calcular:
+//                   - Nombre del menor tiempo de la prueba.
+//                   - Nombre y tiempo del ciclista con mayor numero de vueltas.
+
+#define FYC 100
+
+int main(void)
+{
+
+    int mainLoop = 1;
+    int ciclistas = 0;
+    int tamañoStr = 100;
+
+    char nombres[tamañoStr][tamañoStr];
+    char elemento[tamañoStr];
+
+    printf("///////////////////////////////\n");
+
+    do
+    {
+        printf("Ingrese el nombre del ciclista n%d:\n", ciclistas + 1);
+        fgets(nombres[ciclistas], tamañoStr, stdin);
+        printf("El nombre del ciclista es: %s.\n", nombres[ciclistas]);
+        elemento[tamañoStr] = nombres[ciclistas];
+        for (int i = 0; i != '\0'; i++)
+        {
+            if (elemento[i] == '\n')
+            {
+                elemento[i] = '\0';
+            };
+        };
+        ciclistas++;
+        mainLoop = 0;
+    } while (mainLoop);
+
+    return 0;
+};
+
+/*
 // Ej. 3 (22/9/26): Cantidad indefinida de movimientos de pasajeros, c/u compuestos por 3 arrays:
 //                   .a - motivoViaje: 1-Placer, 2-Negocios, 3-Otros.
 //                   .b - destino: 1-America, 2-Europa, 3-Otros.
@@ -202,7 +245,7 @@ void calcularPorcentajes(int totalPasajeros, int motivoViaje[], int destino[], i
     printf("La cantidad de pasajeros que viajaron en primera, por placer, es de %d, representando al %.1f%% del total.\n", primeraPlacer, promedioPrimeraPlacer);
     printf("/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\n");
 };
-
+*/
 /*
 // Ingresa nombre de alumno, guarda un array de las calificaciones (1-5). Calcula promedio. Al finalizar muestra nombre, notas y promedio.
 void ingreso(char nombre[], int notas[], int tamañoNotas, int *notasTotales);
