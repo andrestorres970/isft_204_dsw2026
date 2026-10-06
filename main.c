@@ -1,7 +1,14 @@
 #include <stdio.h>
 #include <string.h> // Quitar el '\n' del final de fgets(): nombre[strcspn(nombre, "\n")] = '\0';
 // #include <math.h>
+#include <ctype.h>
 
+int main(void)
+{
+    return 0;
+};
+
+/*
 // 29/09/26
 // Ej. 1: Competencia de ciclismo.
 //  Los participantes hacen dos pruebas. La primera registra tiempo, la segunda numero de vueltas.
@@ -12,38 +19,144 @@
 
 #define FYC 100
 
+int carga(char nombres[][FYC], int tiempoPruebaUno[], int vueltasPruebaDos[], int maxCiclistas);
+void calculo_menor_tiempo(char nombres[][FYC], int tiempoPruebaUno[], int maxCiclistas);
+void calculo_mayor_vuelta(char nombres[][FYC], int tiempoPruebaUno[], int vueltasPruebaDos[], int maxCiclistas);
+
 int main(void)
 {
+    int maxCiclistas = 100;
+    int ciclistas;
 
-    int mainLoop = 1;
-    int ciclistas = 0;
-    int tamañoStr = 100;
+    char nombres[FYC][FYC];
+    int tiempoPrubeaUno[FYC];
+    int vueltasPruebaDos[FYC];
 
-    char nombres[tamañoStr][tamañoStr];
-    char elemento[tamañoStr];
+    printf("///////////////////////////////////\nBienvenido al programa de evaluacion de ciclistas!\nIngrese un numero dentro del input de nombre si desea finalizar la aplicacion (max. 100 ciclistas).\n");
 
-    printf("///////////////////////////////\n");
-
-    do
+    ciclistas = carga(nombres, tiempoPrubeaUno, vueltasPruebaDos, maxCiclistas);
+    printf("Los ciclistas ingresados fueron %d.\n", ciclistas);
+    if (ciclistas > 0)
     {
-        printf("Ingrese el nombre del ciclista n%d:\n", ciclistas + 1);
-        fgets(nombres[ciclistas], tamañoStr, stdin);
-        printf("El nombre del ciclista es: %s.\n", nombres[ciclistas]);
-        elemento[tamañoStr] = nombres[ciclistas];
-        for (int i = 0; i != '\0'; i++)
-        {
-            if (elemento[i] == '\n')
-            {
-                elemento[i] = '\0';
-            };
-        };
-        ciclistas++;
-        mainLoop = 0;
-    } while (mainLoop);
+        calculo_menor_tiempo(nombres, tiempoPrubeaUno, ciclistas);
+        calculo_mayor_vuelta(nombres, tiempoPrubeaUno, vueltasPruebaDos, ciclistas);
+    }
+
+    printf("////////////////////////////////////////////////////////////////////////////////////////////////\n");
 
     return 0;
 };
 
+int carga(char nombres[][FYC], int tiempoPruebaUno[], int vueltasPruebaDos[], int maxCiclistas)
+{
+
+    int mainLoop = 1;
+    int ingresoPruebaUno = 1;
+    int ingresoPruebaDos = 1;
+    int ciclistas = 0;
+
+    do
+    {
+        ingresoPruebaUno = 1;
+        ingresoPruebaDos = 1;
+
+        printf("---\nIngrese el nombre del ciclista n%d: ", ciclistas + 1);
+        fgets(nombres[ciclistas], FYC, stdin);
+        nombres[ciclistas][strcspn(nombres[ciclistas], "\n")] = '\0';
+
+        if (isdigit(nombres[ciclistas][0]))
+        {
+            printf("\nHa ingresado un numero dentro del input de nombre, se finalizara la aplicacion.\n////////////////////////////////////////////////////////////////////////////////////////////////\n");
+            mainLoop = 0;
+        }
+        else
+        {
+            do
+            {
+                printf("- Ingrese el tiempo de la primera prueba en segundos enteros: ");
+                scanf("%d", &tiempoPruebaUno[ciclistas]);
+                if (tiempoPruebaUno[ciclistas] > 0)
+                {
+                    ingresoPruebaUno = 0;
+                }
+                else
+                {
+                    printf("Ingrese un valor mayor a cero.");
+                }
+            } while (ingresoPruebaUno);
+            do
+            {
+                printf("- Ingrese las vueltas de la segunda prueba: ");
+                scanf("%d", &vueltasPruebaDos[ciclistas]);
+                if (vueltasPruebaDos[ciclistas] > 0)
+                {
+                    ciclistas++;
+                    ingresoPruebaDos = 0;
+                    getchar();
+                }
+                else
+                {
+                    printf("Ingrese un valor mayor a cero.");
+                }
+            } while (ingresoPruebaDos);
+        }
+    } while (mainLoop);
+
+    return ciclistas;
+};
+
+void calculo_menor_tiempo(char nombres[][FYC], int tiempoPruebaUno[], int maxCiclistas)
+{
+    char nombreMenorTiempo[FYC];
+    int menorTiempo;
+    int ciclista;
+
+    for (int i = 0; i < maxCiclistas; i++)
+    {
+        if (i == 0)
+        {
+            menorTiempo = tiempoPruebaUno[i];
+            strcpy(nombreMenorTiempo, nombres[i]);
+            ciclista = i;
+            continue;
+        }
+        if (tiempoPruebaUno[i] < menorTiempo)
+        {
+            menorTiempo = tiempoPruebaUno[i];
+            strcpy(nombreMenorTiempo, nombres[i]);
+            ciclista = i;
+        }
+    };
+
+    printf("El ciclista con menor tiempo en la primera prueba es %s (%ds).\n", nombreMenorTiempo, tiempoPruebaUno[ciclista]);
+};
+
+void calculo_mayor_vuelta(char nombres[][FYC], int tiempoPruebaUno[], int vueltasPruebaDos[], int maxCiclistas)
+{
+    char nombreMayorVuelta[FYC];
+    int mayorVuelta;
+    int ciclista;
+
+    for (int i = 0; i < maxCiclistas; i++)
+    {
+        if (i == 0)
+        {
+            mayorVuelta = vueltasPruebaDos[i];
+            strcpy(nombreMayorVuelta, nombres[i]);
+            ciclista = i;
+            continue;
+        }
+        if (mayorVuelta < vueltasPruebaDos[i])
+        {
+            mayorVuelta = vueltasPruebaDos[i];
+            strcpy(nombreMayorVuelta, nombres[i]);
+            ciclista = i;
+        }
+    };
+
+    printf("El ciclista con mayor numero de vueltas en la segunda prueba es %s (%d),\ncon un tiempo de %ds en la segunda prueba.\n", nombreMayorVuelta, vueltasPruebaDos[ciclista], tiempoPruebaUno[ciclista]);
+};
+*/
 /*
 // Ej. 3 (22/9/26): Cantidad indefinida de movimientos de pasajeros, c/u compuestos por 3 arrays:
 //                   .a - motivoViaje: 1-Placer, 2-Negocios, 3-Otros.
