@@ -3,11 +3,235 @@
 // #include <math.h>
 #include <ctype.h>
 
+// 29/09/26
+// Ej. 2: Atletas.
+// Se lee:
+// -Nombre de 15 atletas.
+// -Tiempo en 3 carreras (s) de 100mts.
+// Se devuelve:
+//               a. El nombre del atleta que obtuvo el mejor tiempo promedio.
+//               b. Dado el nombre de un atleta, informe su mejor tiempo y en qué carrera lo obtuvo.
+//               c. Dado un número de carrera obtener el nombre y el tiempo del atleta vencedor.
+
+#define NUMATL 2
+#define CHARMAX 101
+#define LAPS 3
+
+void charge(char names[][CHARMAX], int times[][LAPS]);
+void best_time_overall(char names[][CHARMAX], int times[][LAPS]);
+
+void name_search(char names[][CHARMAX], int times[][LAPS]);
+void race_search(char names[][CHARMAX], int times[][LAPS]);
+void search_loop(char names[][CHARMAX], int times[][LAPS], void (*name_search)(char names[][CHARMAX], int times[][LAPS]), void (*race_search)(char names[][CHARMAX], int times[][LAPS]));
+
 int main(void)
 {
+    char names[NUMATL][CHARMAX];
+    int times[NUMATL][LAPS];
+
+    char bestTimeAthlete[CHARMAX];
+
+    printf("///////////////////////////////\nWelcome to the athlete analisis app!\n---\n");
+    charge(names, times);
+    best_time_overall(names, times);
+    search_loop(names, times, &name_search, &race_search);
+
+    printf("///////////////////////////////\n");
+
     return 0;
 };
 
+void charge(char names[][CHARMAX], int times[][LAPS])
+{
+
+    for (int i = 0; i < NUMATL; i++)
+    {
+        printf("Insert the name of the n%d athlete: ", i + 1);
+        fgets(names[i], CHARMAX, stdin);
+        names[i][strcspn(names[i], "\n")] = '\0';
+
+        for (int j = 0; j < LAPS; j++)
+        {
+            printf("-- Insert the time of lap #%d: ", j + 1);
+            scanf("%d", &times[i][j]);
+            // printf("\nLap Input -> %d", times[i][j]);
+        }
+        getchar();
+    };
+};
+
+void best_time_overall(char names[][CHARMAX], int times[][LAPS])
+{
+    char bestTimeAthlete[CHARMAX];
+    int bestTimeOverall;
+
+    for (int i = 0; i < NUMATL; i++)
+    {
+        if (i == 0)
+        {
+            bestTimeOverall = times[i][0];
+            strcpy(bestTimeAthlete, names[i]);
+        };
+        for (int j = 0; j < LAPS; j++)
+        {
+            if (times[i][j] < bestTimeOverall)
+            {
+                bestTimeOverall = times[i][j];
+                strcpy(bestTimeAthlete, names[i]);
+            }
+        }
+    }
+
+    printf("---\nThe athlete with best overall time is %s (%ds).\n", bestTimeAthlete, bestTimeOverall);
+};
+
+void search_loop(char names[][CHARMAX], int times[][LAPS], void (*name_search)(char names[][CHARMAX], int times[][LAPS]), void (*race_search)(char names[][CHARMAX], int times[][LAPS]))
+{
+    int input;
+
+    do
+    {
+        printf("*********************************\nChoose the type of search:\n(1) Best time and race by name.\n(2) Winner by race number.\n(0) Exit app.\n*********************************\n");
+        scanf("%d", &input);
+        switch (input)
+        {
+        case 1:
+            name_search(names, times);
+            break;
+        case 2:
+            race_search(names, times);
+            break;
+        case 0:
+            printf("The app will close.\n");
+            break;
+        default:
+            printf("Input one of the specified values.");
+            getchar();
+            break;
+        }
+    } while (input);
+};
+
+void name_search(char names[][CHARMAX], int times[][LAPS])
+{
+    char nameInput[CHARMAX];
+
+    int bestTime, bestRace;
+
+    int wrongInput = 0;
+    int match = 0;
+    int loop = 1;
+
+    do
+    {
+        printf("--------------\nBest time and race by name.\nInput the athlete's name: ");
+        fgets(nameInput, CHARMAX, stdin);
+
+        // Condicional que controla overflow por superar CHARMAX, y, en caso 0, limpia el '\n' del string.
+        if (strchr(nameInput, '\n') == NULL)
+        {
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF)
+            {
+            };
+        }
+        else
+        {
+            nameInput[strcspn(nameInput, "\n")] = '\0';
+        }
+
+        for (int i = 0; nameInput[i] != '\0'; i++)
+        {
+            if (isdigit(nameInput[i]))
+            {
+                wrongInput = 1;
+                break;
+            }
+        }
+
+        if (wrongInput)
+        {
+            printf("\nThe input must only contain letters. Try again.\n");
+        }
+        else
+        {
+            for (int i = 0; i < NUMATL; i++)
+            {
+                if (!strcmp(nameInput, names[i]))
+                {
+                    match = 1;
+                    for (int j = 0; j < LAPS; j++)
+                    {
+                        if (j == 0)
+                        {
+                            bestTime = times[i][j];
+                            bestRace = j + 1;
+                        }
+                        else if (times[i][j] < bestTime)
+                        {
+                            bestTime = times[i][j];
+                            bestRace = j + 1;
+                        }
+                    };
+
+                    printf("\n%s's best time was %ds on race number %d.\n", names[i], bestTime, bestRace);
+                    loop = 0;
+                    break;
+                }
+            };
+            if (!match)
+            {
+                printf("\nSpecified name wasn't found. Try again.\n");
+            }
+        }
+    } while (loop);
+};
+
+void race_search(char names[][CHARMAX], int times[][LAPS])
+{
+    getchar();
+    int raceInput, match, bestTime;
+    char winner[CHARMAX];
+
+    int wrongInput = 0;
+    int loop = 1;
+
+    do
+    {
+        printf("--------------\nWinner by race number.\nInput the number of the race: ");
+        scanf("%d", &raceInput);
+
+        if (!isdigit(raceInput))
+        {
+            printf("\nThe input must be a number. Try again\n");
+        }
+        else if (raceInput > 3 || raceInput < 1)
+        {
+            printf("\nValue must be between 1 and 3. Try again\n");
+        }
+        else
+        {
+            for (int i = 0; i < NUMATL; i++)
+            {
+                if (i == 0)
+                {
+                    bestTime = times[i][raceInput];
+                    strcpy(names[i], winner);
+                    continue;
+                }
+                else
+                {
+                    if (times[i][raceInput] < bestTime)
+                    {
+                        bestTime = times[i][raceInput];
+                        strcpy(names[i], winner);
+                    }
+                }
+            };
+            printf("\nThe winner of the race number %d is the athlete %s with a time of %ds.\n", raceInput, winner, bestTime);
+        }
+    } while (loop);
+};
 /*
 // 29/09/26
 // Ej. 1: Competencia de ciclismo.
