@@ -88,6 +88,7 @@ void best_time_overall(char names[][CHARMAX], int times[][LAPS])
 void search_loop(char names[][CHARMAX], int times[][LAPS], void (*name_search)(char names[][CHARMAX], int times[][LAPS]), void (*race_search)(char names[][CHARMAX], int times[][LAPS]))
 {
     int input;
+    int cleanStdin = 0;
 
     do
     {
@@ -96,10 +97,12 @@ void search_loop(char names[][CHARMAX], int times[][LAPS], void (*name_search)(c
         switch (input)
         {
         case 1:
+            getchar();
             name_search(names, times);
             break;
         case 2:
             race_search(names, times);
+            cleanStdin = 1;
             break;
         case 0:
             printf("The app will close.\n");
@@ -109,6 +112,13 @@ void search_loop(char names[][CHARMAX], int times[][LAPS], void (*name_search)(c
             getchar();
             break;
         }
+        if (cleanStdin)
+        {
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF)
+            {
+            };
+        };
     } while (input);
 };
 
@@ -116,15 +126,15 @@ void name_search(char names[][CHARMAX], int times[][LAPS])
 {
     char nameInput[CHARMAX];
 
-    int bestTime, bestRace;
-
-    int wrongInput = 0;
-    int match = 0;
+    int bestTime, bestRace, wrongInput, match;
     int loop = 1;
 
     do
     {
-        printf("--------------\nBest time and race by name.\nInput the athlete's name: ");
+        match = 0;
+        wrongInput = 0;
+
+        printf("--------------\nBest time and race by name. (Close with 0)\nInput the athlete's name: ");
         fgets(nameInput, CHARMAX, stdin);
 
         // Condicional que controla overflow por superar CHARMAX, y, en caso 0, limpia el '\n' del string.
@@ -152,6 +162,7 @@ void name_search(char names[][CHARMAX], int times[][LAPS])
         if (wrongInput)
         {
             printf("\nThe input must only contain letters. Try again.\n");
+            continue;
         }
         else
         {
@@ -189,46 +200,43 @@ void name_search(char names[][CHARMAX], int times[][LAPS])
 
 void race_search(char names[][CHARMAX], int times[][LAPS])
 {
-    getchar();
-    int raceInput, match, bestTime;
+    int raceInput, match, bestTime, wrongInput, raceIndex;
     char winner[CHARMAX];
 
-    int wrongInput = 0;
     int loop = 1;
 
     do
     {
-        printf("--------------\nWinner by race number.\nInput the number of the race: ");
-        scanf("%d", &raceInput);
+        wrongInput = 0;
+        printf("--------------\nWinner by race number. (Close with 0)\nInput the number of the race: ");
 
-        if (!isdigit(raceInput))
+        if (scanf("%d", &raceInput) != 1)
         {
-            printf("\nThe input must be a number. Try again\n");
+            printf("\nThe input must be a number. Try again.\n");
         }
         else if (raceInput > 3 || raceInput < 1)
         {
-            printf("\nValue must be between 1 and 3. Try again\n");
+            printf("\nValue must be between 1 and 3. Try again.\n");
         }
         else
         {
+            raceIndex = raceInput - 1;
             for (int i = 0; i < NUMATL; i++)
             {
                 if (i == 0)
                 {
-                    bestTime = times[i][raceInput];
-                    strcpy(names[i], winner);
+                    bestTime = times[i][raceIndex];
+                    strcpy(winner, names[i]);
                     continue;
-                }
-                else
+                };
+                if (times[i][raceIndex] < bestTime)
                 {
-                    if (times[i][raceInput] < bestTime)
-                    {
-                        bestTime = times[i][raceInput];
-                        strcpy(names[i], winner);
-                    }
-                }
+                    bestTime = times[i][raceIndex];
+                    strcpy(winner, names[i]);
+                };
             };
             printf("\nThe winner of the race number %d is the athlete %s with a time of %ds.\n", raceInput, winner, bestTime);
+            loop = 0;
         }
     } while (loop);
 };
