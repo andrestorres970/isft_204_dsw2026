@@ -1,8 +1,73 @@
 #include <stdio.h>
 #include <string.h> // Quitar el '\n' del final de fgets(): nombre[strcspn(nombre, "\n")] = '\0';
-// #include <math.h>
+#include <math.h>
 #include <ctype.h>
+/*
+// 12/10/26
+// Ej. 1: Calcular mediana de un array dado.
 
+#define ARRAYSIZE 7
+
+void sort_mediana(int numbers[ARRAYSIZE])
+{
+    int temp, min, index, mediana;
+
+    for (int j = 0; j < ARRAYSIZE; j++)
+    {
+        printf("%d, ", numbers[j]);
+    };
+    printf("\n");
+
+    for (int i = 0; i < ARRAYSIZE; i++)
+    {
+        for (int j = i; j < ARRAYSIZE; j++)
+        {
+            if (j == i)
+            {
+                min = numbers[j];
+                index = j;
+            }
+            else if (numbers[j] < min)
+            {
+                min = numbers[j];
+                index = j;
+            }
+        }
+
+        temp = numbers[i];
+        numbers[i] = min;
+        numbers[index] = temp;
+
+        printf("Iteración %d:", i);
+        for (int j = 0; j < ARRAYSIZE; j++)
+        {
+            printf("%d, ", numbers[j]);
+        };
+        printf("\n");
+    }
+
+    mediana = numbers[(ARRAYSIZE / 2)];
+    printf("La mediana es %d.", mediana);
+}
+
+int main(void)
+{
+    int numbers[ARRAYSIZE] = {
+        45,
+        -8,
+        19,
+        1,
+        5,
+        -30,
+        6,
+    };
+
+    sort_mediana(numbers);
+
+    return 0;
+};
+*/
+/*
 // 29/09/26
 // Ej. 2: Atletas.
 // Se lee:
@@ -240,6 +305,7 @@ void race_search(char names[][CHARMAX], int times[][LAPS])
         }
     } while (loop);
 };
+*/
 /*
 // 29/09/26
 // Ej. 1: Competencia de ciclismo.
