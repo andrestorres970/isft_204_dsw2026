@@ -2,6 +2,70 @@
 #include <string.h> // Quitar el '\n' del final de fgets(): nombre[strcspn(nombre, "\n")] = '\0';
 #include <math.h>
 #include <ctype.h>
+
+/*
+// 12/10/26
+// Ej. 2: Desarrollar un algoritmo de ordenamiento que encuentre el mayor elemento,
+// lo ubique en la mayor posición del array, y ordene de manera descendiente desde ahi.
+// - Se debe calcular la cantidad de comparaciones realizadas por el algoritmo.
+
+#define ARRAYSIZE 10
+
+void sort(int numbers[ARRAYSIZE])
+{
+    int temp, max, index;
+    int maxPos = ARRAYSIZE - 1;
+    int comparison = 0;
+
+    for (int j = 0; j < ARRAYSIZE; j++)
+    {
+        printf("%d, ", numbers[j]);
+    };
+    printf("\n");
+
+    for (int i = maxPos; i > 0; i--)
+    {
+        for (int j = i; j >= 0; j--)
+        {
+            if (j == i)
+            {
+                max = numbers[j];
+                index = j;
+            }
+            else
+            {
+                comparison++;
+                if (numbers[j] > max)
+                {
+                    max = numbers[j];
+                    index = j;
+                }
+            }
+        }
+
+        temp = numbers[i];
+        numbers[i] = max;
+        numbers[index] = temp;
+
+        printf("Iteración %d: ", i);
+        for (int j = 0; j < ARRAYSIZE; j++)
+        {
+            printf("%d, ", numbers[j]);
+        };
+        printf("\n");
+    }
+    printf("\nThere were a total of %d comparisons.", comparison);
+};
+
+int main(void)
+{
+    int numbers[ARRAYSIZE] = {5, 87, -24, 90, 465, 36, 85, -87, 12, 102};
+
+    sort(numbers);
+
+    return 0;
+};
+*/
 /*
 // 12/10/26
 // Ej. 1: Calcular mediana de un array dado.
